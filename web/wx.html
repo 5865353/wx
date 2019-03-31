@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="css/wx.css">
+    <script src="js/vue.min.js"></script>
+    <!--<script src="js/router.js"></script>-->
+    <script src="js/wb.js"></script>
+</head>
+<body>
+<canvas id="canvas" width="40" height="40" ></canvas>
+    <!--容器-->
+    <div class="container">
+        <!--左边-->
+        <div id="left-arrow" class="leftbox">
+            <!--top-->
+            <div></div>
+            <!--search-->
+            <div></div>
+            <!--bottom-->
+            <div class="li-route">
+
+                <div class="item" v-for="(item,index) in friendli" :key="index" @click="chatWindow(index,item)">
+                    <div class="item-date float-r">{{ item.date }}</div>
+                    <div class="item-img float-l"><img :src="item.tx"></div>
+                    <div class="item-info">
+                        <div class="item-info-name">{{ item.name }}</div>
+                        <div class="item-info-msg">{{ item.msg }}</div>
+                    </div>
+                </div>
+
+
+                <div class="item">
+                    <div class="item-date float-r">19:30</div>
+                    <div class="item-img float-l"><img src="img/kk.jpg"></div>
+                    <div class="item-info">
+                        <div class="item-info-name">roco</div>
+                        <div class="item-info-msg">ssssssssssssssssssss</div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <!--右边-->
+        <div id="right-arrow" class="rightbox">
+            <div class="">{{ name }}</div>
+            <div class="item-img"><img :src="tx" ></div>
+
+            <div class="infocontainer">
+                <div class="messagebox">
+                    <div class="item-img float-l"><img src="img/kk.jpg"></div>
+                    <div class="mes-left">asdasdasdasdasdas</div>
+                </div>
+                <div class="messagebox">
+                    <div class="item-img float-r"><img src="img/kk.jpg"></div>
+                    <div class="mes-right">asdasdasdasdasdas</div>
+                </div>
+            </div>
+    <div>
+        <div>{{ inputValue }}</div>
+        <textarea v-model="inputValue"></textarea>
+        <button @click="sendMsg"> 发送</button>
+    </div>
+
+
+
+
+        </div>
+    </div>
+<script src="js/main.js"></script>
+</body>
+</html>
