@@ -189,6 +189,7 @@ let right_arrow = new Vue({
         },
         //发送消息
         sendMsg() {
+            if(!this.inputValue)return;
             let info = {
                 tx: left_arrow.tx,
                 code: "me",
@@ -252,13 +253,12 @@ let right_arrow = new Vue({
     watch: {
         //监听值
         inputValue(val) {
-            this.inputValue = val.replace(/[\r\n]/g,"");
             if(!val){
                 this.isDisab=false;
-                document.querySelector("#send").setAttribute("disabled",true);
+                document.querySelector("#sendbtn").disabled=true;
             }else{
                 this.isDisab=true;
-                document.querySelector("#send").setAttribute("disabled",false);
+                document.querySelector("#sendbtn").disabled=false;
             }
         }
     }

@@ -66,10 +66,10 @@
             <!--bottom-->
             <div class="chat_bottom">
                 <div class="file-img">
-                    <button @click="sendMsg" id="send" class="send" :class="[ isDisab ? 'btns' :'btndisab']" disabled="disabled">发送</button>
+                    <button @click="sendMsg" id="sendbtn" class="send" :class="[ isDisab ? 'btns' :'btndisab']" >发送</button>
                 </div>
                 <div class="chat_bottom_input">
-                    <textarea spellcheck="false" v-model="inputValue" class="chatInputBox" @keyup.enter="sendMsg"></textarea>
+                    <textarea spellcheck="false" v-model="inputValue" class="chatInputBox" @keyup.ctrl.enter="sendMsg"></textarea>
                 </div>
 
             </div>
