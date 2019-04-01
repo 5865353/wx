@@ -217,8 +217,14 @@ body {
     justify-content: center;
     align-items: center;
 }
-
-.file-img button {
+.btndisab{
+    opacity: .5;
+    cursor: no-drop;
+}
+.btns{
+    cursor: pointer;
+}
+.send {
     float: right;
     color: #fff;
     background-color: #5cb85c;
@@ -233,7 +239,6 @@ body {
     vertical-align: middle;
     -ms-touch-action: manipulation;
     touch-action: manipulation;
-    cursor: pointer;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
@@ -244,7 +249,7 @@ body {
     outline:none;
 }
 
-.file-img button:hover {
+.send:hover {
     color: #fff;
     background-color: #449d44;
     border-color: #398439;

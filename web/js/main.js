@@ -1,3 +1,26 @@
+function FormatTime(t,date){
+    var o = {
+        "M+" : date.getMonth()+1,                 //月份
+        "d+" : date.getDate(),                    //日
+        "h+" : date.getHours(),                   //小时
+        "m+" : date.getMinutes(),                 //分
+        "s+" : date.getSeconds(),                 //秒
+        "q+" : Math.floor((date.getMonth()+3)/3), //季度
+        "S"  : date.getMilliseconds()             //毫秒
+    };
+    if(/(y+)/.test(t)){
+        t=t.replace(RegExp.$1,(date.getFullYear()+"").substr(4-RegExp.$1.length));
+    };
+    for(var k in o){
+        if(new RegExp("("+ k +")").test(t)){
+            t=t.replace(RegExp.$1,(RegExp.$1.length==1)?(o[k]):(("00"+ o[k]).substr((""+o[k]).length)));
+        };
+    }
+    return t;
+};
+
+
+
 let left_arrow = new Vue({
     el: "#left-arrow",
     data: {
@@ -56,7 +79,7 @@ let left_arrow = new Vue({
             if (result != undefined) {
                 let num=result.value.infoNum;
                 msg.infoNum=num++;
-                this.updateValueByIndex(result.index, msg);
+                this.updateValueByIndex(result, msg);
                 //判断是否跟当前好友在聊天
                     if(msg.sid === right_arrow.sid){
                         msg.infoNum=0;
@@ -83,8 +106,13 @@ let left_arrow = new Vue({
         },
         //点击展示聊天窗口
         chatWindow(index, item) {
+            //置顶
             this.topByIndex(index);
+            item.infoNum=0;
+            this.$set(this.friendli, 0, item);
             //传值到 右边视图
+            right_arrow.inputValue="";
+            right_arrow.isLt=true;
             right_arrow.updateWindowInfo(item);
         },
         //将某一列置顶
@@ -94,9 +122,10 @@ let left_arrow = new Vue({
             this.friendli.splice(index + 1, 1);
         },
         //修改好友列表某个索引的值
-        updateValueByIndex(index, msg) {
-            left_arrow.topByIndex(index);//置顶
-            this.$set(this.friendli, 0, msg);
+        updateValueByIndex(result, msg) {
+            Object.assign(result.value,msg);
+            left_arrow.topByIndex(result.index);//置顶
+            this.$set(this.friendli, 0, result.value);
         },
         //修改好友列表某个索引值的某个字段
         updateWhereParambByIndex(sid,field,value){
@@ -127,7 +156,8 @@ let right_arrow = new Vue({
         tx: "",
         inputValue: "",
         chatRecord: [],
-        isLt:true
+        isLt:false,
+        isDisab:false
     },
     methods: {
         //展开聊天窗口
@@ -163,7 +193,7 @@ let right_arrow = new Vue({
                 tx: left_arrow.tx,
                 code: "me",
                 msg: this.inputValue,
-                date:new Date().toDateString()
+                date:FormatTime("hh:mm",new Date())
             };
             //发送消息
             ws.send(this.sid + "-" + info.msg);
@@ -185,7 +215,7 @@ let right_arrow = new Vue({
             let result = left_arrow.findFriendByid(msg.sid);
             if (result !== undefined) {
                 msg.tx=result.value.tx;
-                left_arrow.updateValueByIndex(result.index, msg);//修改信息
+                left_arrow.updateValueByIndex(result, msg);//修改信息
             }
             //正在跟当前好友聊天
             if (msg.sid === this.sid) {
@@ -196,7 +226,8 @@ let right_arrow = new Vue({
              //好友未读消息加一
                 let result = left_arrow.findFriendByid(msg.sid);
                 let num=result.value.infoNum;
-                left_arrow.updateWhereParambByIndex(msg.id,"infoNum",num++);
+                num++;
+                left_arrow.updateWhereParambByIndex(msg.sid,"infoNum",num);
             }
 
         },
@@ -221,6 +252,14 @@ let right_arrow = new Vue({
     watch: {
         //监听值
         inputValue(val) {
+            this.inputValue = val.replace(/[\r\n]/g,"");
+            if(!val){
+                this.isDisab=false;
+                document.querySelector("#send").setAttribute("disabled",true);
+            }else{
+                this.isDisab=true;
+                document.querySelector("#send").setAttribute("disabled",false);
+            }
         }
     }
 });
