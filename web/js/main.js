@@ -7,8 +7,9 @@ let left_arrow = new Vue({
             {
                 date: "21:10",
                 tx: "img/kk.jpg",
-                name: "bj",
-                msg: "test"
+                name: "测试",
+                msg: "test",
+                infoNum:5
             }
         ],
     },
@@ -49,9 +50,20 @@ let left_arrow = new Vue({
         },
         //判断好友是否在列表中
         isExitFriend(msg) {
+            msg.infoNum=1;
             let result = this.findFriendByid(msg.sid);
             //存在好友列表 //修改信息 必须这样设置 不然不会出发视图更新
-            if (result != undefined) return this.updateValueByIndex(result.index, msg);
+            if (result != undefined) {
+                let num=result.value.infoNum;
+                msg.infoNum=num++;
+                this.updateValueByIndex(result.index, msg);
+                //判断是否跟当前好友在聊天
+                    if(msg.sid === right_arrow.sid){
+                        msg.infoNum=0;
+                        right_arrow.updateFriendChatRecord(msg);
+                    }
+                    return;
+            }
             // 不存在添加到好友列表中
             this.friendli.unshift(msg);
         },
@@ -76,14 +88,32 @@ let left_arrow = new Vue({
             right_arrow.updateWindowInfo(item);
         },
         //将某一列置顶
-        topByIndex(inedx) {
+        topByIndex(index) {
             //将位置置顶
             this.friendli.unshift(this.friendli[index]);
             this.friendli.splice(index + 1, 1);
         },
-        //修改某个索引的值
+        //修改好友列表某个索引的值
         updateValueByIndex(index, msg) {
-            this.$set(this.friendli, index, msg)
+            left_arrow.topByIndex(index);//置顶
+            this.$set(this.friendli, 0, msg);
+        },
+        //修改好友列表某个索引值的某个字段
+        updateWhereParambByIndex(sid,field,value){
+           let result= this.findFriendByid(sid);
+           if(!result) return;
+            this.friendli[result.index][field] = value;
+            Vue.set(this.friendli, result.index, this.friendli[result.index]);
+        },
+        //修改好友列表某个索引值的某 "些" 字段
+        updateWhereParamsbByIndex(sid,fieldObj){
+            let result= this.findFriendByid(sid);
+            if(!result) return;
+            let index=result.index;
+            for(let i in fieldObj){
+                this.friendli[index][i] = fieldObj[i];
+            }
+            Vue.set(this.friendli, index, this.friendli[index]);
         }
 
     }
@@ -93,25 +123,28 @@ let right_arrow = new Vue({
     el: "#right-arrow",
     data: {
         sid: "",
-        name: "roco",
-        tx: "asdas",
+        name: "",
+        tx: "",
         inputValue: "",
-        chatRecord: []
+        chatRecord: [],
+        isLt:true
     },
     methods: {
+        //展开聊天窗口
         updateWindowInfo(item) {
+            this.chatRecord=[];
             this.name = item.name;
             this.tx = item.tx;
             this.sid = item.sid;
             //遍历聊天记录
             let info = window.localStorage.getItem(item.sid);
-            if (info == undefined) return;
+            if (!info) return;
             info = info.split("&&");
             var infoArray = [];
             for (let i in info) {
-                let code = info[i].indexOf("he") != -1 ? "he" : "me";
+                let code = info[i].indexOf("he") !== -1 ? "he" : "me";
                 let msg = info[i].split(":")[1];
-                let tx = code == "he" ? this.msg.tx : left_arrow.tx;
+                let tx = code === "he" ? this.tx : left_arrow.tx;
                 infoArray.push({tx, code, msg});
             }
             this.chatRecord = infoArray;
@@ -127,11 +160,15 @@ let right_arrow = new Vue({
         //发送消息
         sendMsg() {
             let info = {
-                tx: right_arrow.tx,
+                tx: left_arrow.tx,
                 code: "me",
-                msg: this.inputValue
+                msg: this.inputValue,
+                date:new Date().toDateString()
             };
+            //发送消息
             ws.send(this.sid + "-" + info.msg);
+            //修改好友的最后一条消息记录
+            left_arrow.updateWhereParambByIndex(this.sid,"msg",info.msg);
             //保存消息到本地
             this.saveMsg(this.sid, info.code, info.msg);
             this.chatRecord.push(info);
@@ -147,18 +184,39 @@ let right_arrow = new Vue({
             //将好友位置置顶 并修改信息
             let result = left_arrow.findFriendByid(msg.sid);
             if (result !== undefined) {
-                left_arrow.topByindex(result.index);
-                left_arrow.updateValueByIndex(result.index, msg);
+                msg.tx=result.value.tx;
+                left_arrow.updateValueByIndex(result.index, msg);//修改信息
             }
             //正在跟当前好友聊天
             if (msg.sid === this.sid) {
-                //填充消息到容器
-                this.name = msg.name;
-                this.tx = msg.tx;
-                this.chatRecord.push(msg.msg);
+                this.updateFriendChatRecord(msg);
+                msg.code="he";
+                this.chatRecord.push(msg);
+            }else{
+             //好友未读消息加一
+                let result = left_arrow.findFriendByid(msg.sid);
+                let num=result.value.infoNum;
+                left_arrow.updateWhereParambByIndex(msg.id,"infoNum",num++);
             }
 
+        },
+        //修改聊天记录容器里的信息
+        updateChatRecord(field,value){
+            for (let i in this.chatRecord){
+                if(this.chatRecord[i].code=="he"){
+                    this.chatRecord[i][field] = value;
+                    Vue.set(this.chatRecord, i, this.chatRecord[i]);
+                }
+            }
+        },
+        //修改容器里好友信息
+        updateFriendChatRecord(msg){
+            //填充消息到容器
+            this.name = msg.name;
+            this.tx = msg.tx;
+            this.updateChatRecord("tx",this.tx);
         }
+
     },
     watch: {
         //监听值

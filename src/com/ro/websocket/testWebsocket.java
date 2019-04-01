@@ -153,7 +153,7 @@ public class testWebsocket {
                 if (sid != null) {
                     // 发送给前台
                     testWebsocket s_client = connectio.get(sid);
-                    msg mseg = createMsgBean("inmessage", sid, msg, s_client.name,"");
+                    msg mseg = createMsgBean("inmessage", sid, msg, s_client.name);
                     msg = jsontostring(mseg);
                 }
                 client.session.getBasicRemote().sendText(msg);
@@ -214,7 +214,9 @@ public class testWebsocket {
         result.setSid(value[1]);
         result.setMsg(value[2]);
         result.setName(value[3]);
-        result.setTx(value[4]);
+        if(value.length>4){
+            result.setTx(value[4]);
+        }
         result.setDate(new SimpleDateFormat("HH:mm").format(new Date()));
         return result;
     }

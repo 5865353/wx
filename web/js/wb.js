@@ -86,7 +86,6 @@
         if (heartCheck.tryTime < 10) {
             setTimeout(()=>{
                 heartCheck.tryTime++;
-                console.log(this)
                 this.onopen();
             }, 3 * 1000);
         } else {
@@ -111,7 +110,7 @@
     // 监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
     window.onbeforeunload = function() {
         this.ws.close();//关闭
-        window.localStorage.clear();//清空本地 存储
+        // window.localStorage.clear();//清空本地 存储
     }
 
 })(ws = {});
