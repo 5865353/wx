@@ -8,6 +8,29 @@ body {
     padding: 0;
 }
 
+@media (max-width: 768px) {
+    html,body{
+        height: 100%!important;
+    }
+    .container{
+        display: block!important;
+        height: 100%!important;
+    }
+    .leftbox{
+        width: 100%!important;
+    }
+    .initialize{
+        display: none!important;
+    }
+    .rightboxpos{
+        position: absolute;
+        left: 0px;
+        right: 0px;
+        top: 0px;
+        bottom: 0px;
+    }
+}
+
 #canvas {
     display: none;
 }
@@ -18,11 +41,13 @@ body {
     margin: 0px auto;
     display: flex;
     height: 550px;
+    border-radius: 7px;
+    overflow: hidden;
 }
 
 .leftbox {
-    background: #eee;
-    width: 320px;
+    background: #42b983;
+    width: 310px;
     height: 100%;
 }
 
@@ -32,10 +57,90 @@ body {
     height: 100%;
 }
 
-.item {
-    padding: 12px;
+.le-top{
+    display: flex;
+    padding: 8px;
+    border-bottom: 0.5px solid rgba(255,255,225,0.7);
+    position: relative;
+    padding-bottom: 2px;
+}
+.le-top-tx{
+
+}
+.le-top-name{
+    flex: 1;
+    line-height: 40px;
+    padding-left: 8px;
+    color: #fff;
+    font-size: 24px;
+    letter-spacing: 1px;
+    text-shadow: 2px 0px 13px #333;
+}
+.le-downmenu{
+    position: absolute;
+    right: 5px;
     cursor: pointer;
-    border-bottom: .5px solid #fff;
+    color: rgba(225,225,225,.5);
+    font-size: 26px;
+    line-height: 40px;
+}
+.le-search{
+    padding: 10px 5px;
+    border-bottom: .5px solid rgba(225,225,225,.7);
+    position: relative;
+}
+.le-search input[type='text']{
+    width: 100%;
+    border-radius: 4px;
+    outline: none;
+    border: 0px none;
+    height: 30px;
+    padding-left: 29px;
+}
+.le-searchs{
+    position: absolute;
+    top: 10px;
+    color: #c0c0c0;
+    left: 5px;
+    border-right: .5px solid #c0c0c0;
+    padding: 3px 6px;
+    height: 30px;
+
+
+}
+.li-route-fl{
+    display: flex;
+    margin: 0px 0px 5px 0;
+    color: #fff;
+    font-size: 21px;
+    text-align: center;
+    border-bottom: .5px solid rgba(225,225,225,0.7);
+    line-height: 37px;
+    padding: 3px 0px
+}
+.li-route-fl div{
+    flex: 1;
+    cursor: pointer;
+}
+.li-route-fl div:hover{
+    color: #ADFF2F;
+    text-shadow: 2px 0px 13px #333;
+}
+.li-route-active{
+    color: #ADFF2F;
+    text-shadow: 2px 0px 13px #333;
+}
+.li-route-fl div:not(:last-of-type){
+    border-right: .5px solid rgba(225,225,225,0.7);
+}
+.item {
+    padding: 8px 10px;
+    cursor: pointer;
+    border-bottom: 0.5px solid rgba(255,255,225,0.7);
+    color: #fff
+}
+a{
+    text-decoration: none;
 }
 
 .item::after {
@@ -100,6 +205,7 @@ body {
     height: 50px;
     text-align: center;
     border-bottom: .5px solid #fff;
+    line-height: 50px
 }
 
 .chat_bottom {
@@ -113,10 +219,19 @@ body {
     flex: 1;
     overflow-y: auto;
 }
-
+.chat-close{
+    float: right;
+    margin-right: 13px;
+    cursor: pointer;
+    color: #c0c0c0;
+    transition: all 1.5s;
+}
+.chat-close:hover{
+    color: #333;
+    transform:rotate(90deg);
+}
 .messagebox {
     width: 100%;
-    margin: 5px 0px;
 }
 
 .messagebox::after {
@@ -174,12 +289,18 @@ body {
 
 .file-img {
     height: 40px;
+    border-top: .5px solid #fff;
 }
-
+.file-img i {
+    font-size: 30px;
+    color: #c1c1c1;
+    margin: 0px 2px;
+    cursor: pointer;
+    line-height: 40px
+}
 .chat_bottom_input {
     background: #DCDCDC;
-    padding: 8px;
-    height: inherit;
+    padding: 4px;
     flex: 1;
     display: flex;
 }
@@ -205,7 +326,7 @@ body {
     width: 100%;
     height: 100%;
     position: relative;
-    background: darkgray;
+    background: gainsboro;
 }
 
 .initialize::after {
@@ -216,6 +337,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    color: #fff;
+    text-shadow: 1px 1px 1px #333
 }
 .btndisab{
     opacity: .5;
@@ -247,6 +370,7 @@ body {
     border: 1px solid #4cae4c;
     border-radius: 4px;
     outline:none;
+    margin-top: 3px;
 }
 
 .send:hover {

@@ -3,8 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="stylesheet" href="css/wx.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
     <script src="js/vue.min.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery.nicescroll.js"></script>
     <script src="js/wb.js"></script>
 </head>
 <body>
@@ -14,29 +18,49 @@
     <!--左边-->
     <div id="left-arrow" class="leftbox">
         <!--top-->
-        <div></div>
+        <div class="le-top">
+            <div class="item-img le-top-tx">
+                <img :src="tx">
+            </div>
+            <div class="le-top-name">{{ name }}</div>
+            <div class="le-downmenu"><i class="fa fa-reorder"></i></div>
+        </div>
         <!--search-->
-        <div></div>
+        <div class="le-search">
+            <input type="text" spellcheck="false">
+            <div class="le-searchs"><i class="fa fa-search"></i></div>
+        </div>
         <!--bottom-->
         <div class="li-route">
-
-            <div class="item" v-for="(item,index) in friendli" :key="index" @click="chatWindow(index,item)">
-                <div class="item-date float-r">{{ item.date }}</div>
-                <div class="item-img float-l item-new-msg" >
-                    <img :src="item.tx">
-                    <div class="new-msg" v-show="item.infoNum >0 ? true : false">{{ item.infoNum }}</div>
+            <div class="li-route-fl">
+                <div class="li-route-active">
+                    <i class="fa fa-comment "></i>
                 </div>
-                <div class="item-info">
-                    <div class="item-info-name">{{ item.name }}</div>
-                    <div class="item-info-msg">{{ item.msg }}</div>
+                <div class="">
+                    <i class="fa fa-user-plus"></i>
+                </div>
+                <div class="">
+                    <i class="fa fa-address-book-o"></i>
                 </div>
             </div>
-
+            <a href="#showInfo">
+                <div class="item" v-for="(item,index) in friendli" :key="index" @click="chatWindow(index,item)">
+                    <div class="item-date float-r">{{ item.date }}</div>
+                    <div class="item-img float-l item-new-msg">
+                        <img :src="item.tx">
+                        <div class="new-msg" v-show="item.infoNum >0 ? true : false">{{ item.infoNum }}</div>
+                    </div>
+                    <div class="item-info">
+                        <div class="item-info-name">{{ item.name }}</div>
+                        <div class="item-info-msg">{{ item.msg }}</div>
+                    </div>
+                </div>
+            </a>
 
             <div class="item">
                 <div class="item-date float-r">19:30</div>
                 <div class="item-img float-l item-new-msg"><img src="img/kk.jpg">
-                <div class="new-msg">9</div>
+                    <div class="new-msg">9</div>
                 </div>
                 <div class="item-info">
                     <div class="item-info-name">roco</div>
@@ -47,12 +71,16 @@
         </div>
     </div>
     <!--右边-->
-    <div id="right-arrow" class="rightbox">
+    <div id="right-arrow" class="rightbox" :class="{rightboxpos :isLt}">
 
         <!--聊天窗口-->
         <div v-show="isLt" class="chat_window">
             <!--top-->
-            <div class="chat_top">{{ name }}</div>
+            <div class="chat_top">{{ name }}
+                <div class="chat-close" title="关闭" @click="closeChat_Window">
+                    <i class="fa fa-close"></i>
+                </div>
+            </div>
             <!--content-->
             <div class="chat_content">
 
@@ -66,10 +94,14 @@
             <!--bottom-->
             <div class="chat_bottom">
                 <div class="file-img">
-                    <button @click="sendMsg" id="sendbtn" class="send" :class="[ isDisab ? 'btns' :'btndisab']" >发送</button>
+                    <button @click="sendMsg" id="sendbtn" class="send" :class="[ isDisab ? 'btns' :'btndisab']">发送
+                    </button>
+                    <i class="fa fa-smile-o"></i> <i class="fa fa-photo"></i> <i
+                        class="fa fa-folder-o"></i>
                 </div>
                 <div class="chat_bottom_input">
-                    <textarea spellcheck="false" v-model="inputValue" class="chatInputBox" @keyup.ctrl.enter="sendMsg"></textarea>
+                    <textarea spellcheck="false" v-model="inputValue" class="chatInputBox"
+                              @keyup.ctrl.enter="sendMsg"></textarea>
                 </div>
 
             </div>
