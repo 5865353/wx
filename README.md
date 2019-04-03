@@ -22,9 +22,5 @@ websocket + vue + servlet 聊天 (一对一私聊 给指定人发送消息)
 # 未读消息
 ![image](https://github.com/5865353/wx/blob/master/tinified/04.PNG)
 # 小屏幕 
-<div align=left>
-    ![image](https://github.com/5865353/wx/blob/master/tinified/06.PNG)
-</div>
-<div align=right>
-    ![image](https://github.com/5865353/wx/blob/master/tinified/05.PNG)
-</div>
+![image](https://github.com/5865353/wx/blob/master/tinified/06.PNG)  
+![image](https://github.com/5865353/wx/blob/master/tinified/05.PNG)
