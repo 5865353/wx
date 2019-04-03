@@ -77,7 +77,7 @@ let left_arrow = new Vue({
             msg.infoNum = 1;
             let result = this.findFriendByid(msg.sid);
             //存在好友列表 //修改信息 必须这样设置 不然不会出发视图更新
-            if (result != undefined) {
+            if (result) {
                 let num = result.value.infoNum;
                 msg.infoNum = num++;
                 this.updateValueByIndex(result, msg);
@@ -96,14 +96,9 @@ let left_arrow = new Vue({
             let value = this.friendli.find(function (value) {
                 return value.sid == sid;
             });
-            if (value != undefined) {
-                let index = this.friendli.indexOf(value);
-                return obj = {
-                    index,
-                    value
-                };
-            }
-            return value;
+            if (!value)return value;
+            let index = this.friendli.indexOf(value);
+            return {index,value};
         },
         //点击展示聊天窗口
         chatWindow(index, item) {
@@ -112,8 +107,6 @@ let left_arrow = new Vue({
             item.infoNum = 0;
             this.$set(this.friendli, 0, item);
             //传值到 右边视图
-            right_arrow.inputValue = "";
-            right_arrow.isLt = true;
             right_arrow.updateWindowInfo(item);
         },
         //将某一列置顶
@@ -134,18 +127,7 @@ let left_arrow = new Vue({
             if (!result) return;
             this.friendli[result.index][field] = value;
             Vue.set(this.friendli, result.index, this.friendli[result.index]);
-        },
-        //修改好友列表某个索引值的某 "些" 字段
-        updateWhereParamsbByIndex(sid, fieldObj) {
-            let result = this.findFriendByid(sid);
-            if (!result) return;
-            let index = result.index;
-            for (let i in fieldObj) {
-                this.friendli[index][i] = fieldObj[i];
-            }
-            Vue.set(this.friendli, index, this.friendli[index]);
         }
-
     }
 });
 
@@ -163,6 +145,8 @@ let right_arrow = new Vue({
     methods: {
         //展开聊天窗口
         updateWindowInfo(item) {
+            this.inputValue = "";
+            this.isLt = true;
             this.chatRecord = [];
             this.name = item.name;
             this.tx = item.tx;
@@ -178,7 +162,10 @@ let right_arrow = new Vue({
                 infoArray.push(msg);
             }
             this.chatRecord = infoArray;
-            this.chatContriner();
+            this.$nextTick(function () {
+                this.chatContriner();
+            });
+
         },
         //保存消息
         saveMsg(msg, sid) {
@@ -208,7 +195,10 @@ let right_arrow = new Vue({
             left_arrow.updateWhereParambByIndex(this.sid, "msg", info.msg);
             //添加到聊天窗口
             this.chatRecord.push(info);
-            this.chatContriner();
+            this.$refs.iv.focus();
+            this.$nextTick(function () {
+                this.chatContriner();
+            });
             //保存消息到本地
             this.saveMsg(JSON.stringify(info), this.sid);
             //清空输入框信息
@@ -231,6 +221,9 @@ let right_arrow = new Vue({
                 this.updateFriendChatRecord(msg);
                 msg.code = "he";
                 this.chatRecord.push(msg);
+                this.$nextTick(function () {
+                    this.chatContriner();
+                });
             } else {
                 //好友未读消息加一
                 let result = left_arrow.findFriendByid(msg.sid);
@@ -268,11 +261,10 @@ let right_arrow = new Vue({
             this.isLt = false;
             this.isDisab = false
         },
-        chatContriner(){
-            let dom=document.querySelector(".chat_content");
-            let scrollHeight = dom.scrollHeight;
-            console.log(scrollHeight)
-            if(scrollHeight>340)return dom.scrollTop=9999999;
+        //修改聊天容器滚动条位置
+        chatContriner() {
+            let scrollHeight = this.$refs.chw.scrollHeight;
+            if (scrollHeight > 340) return this.$refs.chw.scrollTop = scrollHeight;
         },
         //好友下线
         inerror() {
@@ -285,10 +277,10 @@ let right_arrow = new Vue({
         inputValue(val) {
             if (!val) {
                 this.isDisab = false;
-                document.querySelector("#sendbtn").disabled = true;
+                this.$refs.sendbtn.disabled = true;
             } else {
                 this.isDisab = true;
-                document.querySelector("#sendbtn").disabled = false;
+                this.$refs.sendbtn.disabled = false;
             }
         }
     }

@@ -74,7 +74,7 @@
     <div id="right-arrow" class="rightbox" :class="{rightboxpos :isLt}">
 
         <!--聊天窗口-->
-        <div v-show="isLt" class="chat_window">
+        <div v-show="isLt" class="chat_window" >
             <!--top-->
             <div class="chat_top">{{ name }}
                 <div class="chat-close" title="关闭" @click="closeChat_Window">
@@ -82,7 +82,7 @@
                 </div>
             </div>
             <!--content-->
-            <div class="chat_content">
+            <div class="chat_content" ref="chw">
 
                 <div class="messagebox" v-for="(item,index) in chatRecord" :key="index">
                     <div class="msg-date">{{ item.date }}</div>
@@ -94,14 +94,14 @@
             <!--bottom-->
             <div class="chat_bottom">
                 <div class="file-img">
-                    <button @click="sendMsg" id="sendbtn" class="send" :class="[ isDisab ? 'btns' :'btndisab']">发送
+                    <button @click="sendMsg" ref="sendbtn" id="sendbtn" class="send" :class="[ isDisab ? 'btns' :'btndisab']">发送
                     </button>
                     <i class="fa fa-smile-o"></i> <i class="fa fa-photo"></i> <i
                         class="fa fa-folder-o"></i>
                 </div>
                 <div class="chat_bottom_input">
                     <textarea spellcheck="false" v-model="inputValue" class="chatInputBox"
-                              @keyup.ctrl.enter="sendMsg"></textarea>
+                              @keyup.ctrl.enter="sendMsg" ref="iv"></textarea>
                 </div>
 
             </div>
