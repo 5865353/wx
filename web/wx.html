@@ -101,7 +101,7 @@
                 </div>
                 <div class="chat_bottom_input">
                     <textarea spellcheck="false" v-model="inputValue" class="chatInputBox"
-                              @keyup.ctrl.enter="sendMsg" ref="iv"></textarea>
+                              @keydown.alt.enter="sendMsg" ref="iv"></textarea>
                 </div>
 
             </div>
