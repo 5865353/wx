@@ -44,8 +44,7 @@ let left_arrow = new Vue({
     methods: {
         createName() {
             let name = prompt("请输入name", "");
-            !name && this.createName();
-            this.name = name;
+            return !name ?  this.createName() : this.name=name;
         },
         createTx(name) {
             let color = '#' + Math.random().toString(16).substr(2, 6);
@@ -288,7 +287,7 @@ let right_arrow = new Vue({
 
 
 ws.init({
-    url: "localhost:8080/wx/websocket", // 后台接口地址
+    url: "192.168.43.149:8080/wx/websocket", // 后台接口地址
     debug: true //打印日志
 }).connect(); //连接
 
