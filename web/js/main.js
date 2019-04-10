@@ -93,7 +93,7 @@ let left_arrow = new Vue({
         //根据id查询 索引 --值
         findFriendByid(sid) {
             let value = this.friendli.find(function (value) {
-                return value.sid == sid;
+                return value.sid === sid;
             });
             if (!value)return value;
             let index = this.friendli.indexOf(value);
@@ -154,10 +154,10 @@ let right_arrow = new Vue({
             let info = window.localStorage.getItem(item.sid);
             if (!info) return;
             info = info.split("&&");
-            var infoArray = [];
+            let infoArray = [];
             for (let i in info) {
                 let msg = JSON.parse(info[i]);
-                msg.tx = msg.code == "he" ? this.tx : left_arrow.tx;
+                msg.tx = msg.code === "he" ? this.tx : left_arrow.tx;
                 infoArray.push(msg);
             }
             this.chatRecord = infoArray;
@@ -170,7 +170,7 @@ let right_arrow = new Vue({
         saveMsg(msg, sid) {
             msg = JSON.parse(msg);
             sid = sid || msg.sid;
-            msg.code = msg.code == "me" ? msg.code : "he";
+            msg.code = msg.code === "me" ? msg.code : "he";
             msg.tx = "";
             //保存消息到本地
             let seinfo = window.localStorage.getItem(sid); //获取聊天记录
@@ -252,13 +252,9 @@ let right_arrow = new Vue({
         closeChat_Window() {
             //返回上一页
             window.history.back();
-            this.sid = "";
-            this.name = "";
-            this.tx = "";
-            this.inputValue = "";
+            this.sid=this.name=this.tx=this.inputValue="";
             this.chatRecord = [];
-            this.isLt = false;
-            this.isDisab = false
+            this.isDisab=this.isLt = false;
         },
         //修改聊天容器滚动条位置
         chatContriner() {
@@ -274,13 +270,8 @@ let right_arrow = new Vue({
     watch: {
         //监听值
         inputValue(val) {
-            if (!val) {
-                this.isDisab = false;
-                this.$refs.sendbtn.disabled = true;
-            } else {
-                this.isDisab = true;
-                this.$refs.sendbtn.disabled = false;
-            }
+             this.isDisab= val ? true:false;
+            this.$refs.sendbtn.disabled=!this.isDisab;
         }
     }
 });
@@ -319,9 +310,3 @@ $(function () {
     });
 
 });
-
-window.onload = function () {
-    window.addEventListener("popstate", function (e) {
-
-    });
-}
